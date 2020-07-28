@@ -15,8 +15,10 @@ void timer0ISR(void);
 IntervalTimer timer0;
 uint32_t timer0_period = 1000;		// timer period [ms]
 
-float tx_floats[2] = {1.2, 3.4};		// Array to be transmitted
-int n_tx_floats = sizeof(tx_floats) / sizeof(tx_floats[0]);
+int tx_int = 1633837924;			// = abcd in ASCII. Single integer to be transmitted via UART
+//int tx_ints[2] = {1633837924, 1701209960};		// abcdefgh in ASCII. Array to be transmitted
+int tx_ints[2] = {3, 4};		// Array to be transmitted
+int n_tx_ints = sizeof(tx_ints) / sizeof(tx_ints[0]);
 
 void setup(){
 	Serial.begin(115200);
@@ -33,8 +35,8 @@ void timer0ISR(void){
 	// Transmit a single integer
 	//uartWrite(tx_int);
 
-	// Transmit an array of floats
-	uartTransmit(tx_floats, n_tx_floats);
+	// Transmit an array of integers
+	uartTransmit(tx_ints, n_tx_ints);
 
 	//Serial.println();			// if outputting to a terminal
 }

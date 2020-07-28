@@ -17,10 +17,10 @@ IntervalTimer timer0;
 uint32_t timer0_period = 1000;		// timer period [ms]
 
 // Global Variables
-float rx_float = 0;			// individual integer recieved via UART
-float rx_floats[2] = {};	// should be {1.2, 2.3}
-int n_rx_floats = sizeof(rx_floats) / sizeof(rx_floats[0]);
-int n_rx_bytes = n_rx_floats * sizeof(rx_floats[0]);
+int rx_int = 0;			// individual integer recieved via UART
+int rx_ints[2] = {};	// should be {1, 10}
+int n_rx_ints = sizeof(rx_ints) / sizeof(rx_ints[0]);
+int n_rx_bytes = n_rx_ints * sizeof(rx_ints[0]);
 
 int led_pin = 13;
 
@@ -38,21 +38,20 @@ void loop(){}
 void timer0ISR(void){
 	//Serial.println("timer0 loop");
 
-	//Serial.println(Serial.available());
+	Serial.println(Serial.available());
 
-	// Receive a single float
-/*	if(Serial.available() >= sizeof(rx_float){
-		rx_float = uartReadInt();
-		//Serial.println(rx_float);
+	// Receive a single integer
+/*	if(Serial.available() >= sizeof(rx_int){
+		rx_int = uartReadInt();
+		//Serial.println(rx_int);
 	}*/
 
 	// Receive an array of integers
 	if(Serial.available() >= n_rx_bytes){
-		uartReceive(rx_floats, n_rx_floats);
-		//serialPrintArray(rx_floats, n_rx_floats);		// if using putty or serial monitor
+		uartReceive(rx_ints, n_rx_ints);
+		//serialPrintArray(rx_ints, n_rx_ints);		// if using putty or serial monitor
 
-		//blinkLED();
-		if(rx_floats[0] == 1.2 && rx_floats[1] == 2.3){
+		if(rx_ints[0] == 1 && rx_ints[1] == 10){
 			blinkLED();
 		}
 	}
