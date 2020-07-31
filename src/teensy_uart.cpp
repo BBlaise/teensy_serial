@@ -7,7 +7,6 @@
 
 #include "teensy_uart.h"
 #include "Arduino.h"
-#include "stdio.h"
 #include "bitwise.h"
 
 // Print a tab-delimited array of integers to the serial monitor
@@ -31,8 +30,7 @@ void serialPrintArray(float* array, int n_vals){
 	Serial.write('\n');
 }
 
-// Print a tab-delimited array of integers to the serial monitor
-
+/*------------------------------------ Transmit Functions -------------------------------------------*/
 // This function transmits a single 32-bit integer via UART
 void uartTransmit(int tx_int){
 	uint8_t tx_bytes[4] = {};
@@ -54,20 +52,9 @@ void uartTransmit(float tx_float){
 	}
 }
 
-// This function transmits an array of 32-bit integers via UART
-void uartTransmit(int* tx_ints, uint8_t tx_bytes[][4], int n_tx){
-    for(int ii = 0; ii < n_tx; ii++){
-        tx_bytes[ii][0] = (tx_ints[ii] >> 24) & 0xFF;
-        tx_bytes[ii][1] = (tx_ints[ii] >> 16) & 0xFF;
-        tx_bytes[ii][2] = (tx_ints[ii] >> 8) & 0xFF;
-        tx_bytes[ii][3] = tx_ints[ii] & 0xFF;
-        for(int jj = 0; jj < 4; jj++){
-        	Serial.write(tx_bytes[ii][jj]);
-        }
-    }
-}
 
 // This function transmits an array of 32-bit integers via UART
+/*
 void uartTransmit(int* tx_ints, int n_tx){
 	uint8_t tx_bytes[n_tx][4] = {};
     for(int ii = 0; ii < n_tx; ii++){
@@ -80,16 +67,47 @@ void uartTransmit(int* tx_ints, int n_tx){
         }
     }
 }
+*/
 
-// This function transmits an array of 32-bit floats via UART
-void uartTransmit(float* tx_floats, uint8_t tx_bytes[][4], int n_tx){
+void uartTransmit(int* tx_ints, int n_tx){
+	int int_size = sizeof(tx_ints[0]);
+	uint8_t tx_bytes[n_tx][int_size] = {};
+
     for(int ii = 0; ii < n_tx; ii++){
-        floatToBytes(tx_floats[ii], tx_bytes[ii]);
-        for(int jj = 0; jj < 4; jj++){
+    	intToBytes(tx_ints[ii], tx_bytes[ii]);
+    	//int32ToBytes(tx_ints[ii], tx_bytes[ii]);
+        for(int jj = 0; jj < int_size; jj++){
         	Serial.write(tx_bytes[ii][jj]);
         }
     }
 }
+
+// This function transmits an array of 32-bit integers via UART
+void uartTransmit(int32_t* tx_ints, int n_tx){
+	int int_size = 4;
+	uint8_t tx_bytes[n_tx][int_size] = {};
+
+    for(int ii = 0; ii < n_tx; ii++){
+    	int32ToBytes(tx_ints[ii], tx_bytes[ii]);
+        for(int jj = 0; jj < int_size; jj++){
+        	Serial.write(tx_bytes[ii][jj]);
+        }
+    }
+}
+
+// This function transmits an array of 16-bit integers via UART
+void uartTransmit(int16_t* tx_ints, int n_tx){
+	int int_size = 2;
+	uint8_t tx_bytes[n_tx][int_size] = {};
+
+    for(int ii = 0; ii < n_tx; ii++){
+    	int16ToBytes(tx_ints[ii], tx_bytes[ii]);
+        for(int jj = 0; jj < int_size; jj++){
+        	Serial.write(tx_bytes[ii][jj]);
+        }
+    }
+}
+
 // This function transmits an array of 32-bit floats via UART
 void uartTransmit(float* tx_floats, int n_tx){
 	 uint8_t tx_bytes[n_tx][4] = {};
@@ -101,7 +119,7 @@ void uartTransmit(float* tx_floats, int n_tx){
     }
 }
 
-void uartTransmitMultiAscii(uint8_t* tx_msg, int n_bytes){
+void uartTransmitAscii(uint8_t* tx_msg, int n_bytes){
 	for(int ii = 0; ii < n_bytes; ii++){
 		Serial.print(tx_msg[ii]);
 		Serial.write('\t');
@@ -166,6 +184,32 @@ void uartReceive(int* rx_ints, int n_tx){
     	}
 
     	rx_ints[ii] = bytesToInt32(rx_bytes[ii]);
+    }
+}
+
+// This function receives an array of 32-bit integers via UART
+void uartReceive(int32_t* rx_ints, int n_tx){
+	uint8_t rx_bytes[n_tx][4] = {};
+
+    for(int ii = 0; ii < n_tx; ii++){
+    	for(int jj = 0; jj < 4; jj++){
+    		rx_bytes[ii][jj] = Serial.read();
+    	}
+
+    	rx_ints[ii] = bytesToInt32(rx_bytes[ii]);
+    }
+}
+
+// This function receives an array of 32-bit integers via UART
+void uartReceive(int16_t* rx_ints, int n_tx){
+	uint8_t rx_bytes[n_tx][4] = {};
+
+    for(int ii = 0; ii < n_tx; ii++){
+    	for(int jj = 0; jj < 2; jj++){
+    		rx_bytes[ii][jj] = Serial.read();
+    	}
+
+    	rx_ints[ii] = bytesToInt16(rx_bytes[ii]);
     }
 }
 

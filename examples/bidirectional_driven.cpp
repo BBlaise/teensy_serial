@@ -1,5 +1,5 @@
 // Do not remove the include below
-#include "teensy_uart_devel.h"
+#include "Arduino.h"
 
 // C/C++ Libraries
 #include <stdint.h>
@@ -20,12 +20,13 @@ uint32_t timer0_period = 1000;		// timer period [ms]
 int led_pin = 13;
 
 // Global Variables
-float tx[2] = {5.6, -7.8};
+float tx[2] = {-1.2, 3.4};		// Array (vector) of float32s to be transmitted every timestep
 int n_tx = sizeof(tx) / sizeof(tx[0]);
-float rx[2] = {};	// should be {1.2, 2.3}
+
+float rx[2] = {};			// Array (vector) of floats to be received via UART
 int n_rx = sizeof(rx) / sizeof(rx[0]);
 int n_rx_bytes = sizeof(rx);
-//int n_rx_bytes = n_rx * sizeof(rx[0]);
+float correct_rx[2] = {-1.2, 3.4};		// values known to be sent by other device
 
 void setup(){
 	pinMode(led_pin, OUTPUT);
@@ -37,23 +38,20 @@ void setup(){
 }
 
 void loop(){
-	if(rx[0] == 1.2 && rx[1] == -3.4){
-		blinkLED();
-		rx[0] = 0; rx[1] = 0;
+	// Receive Data from MATLAB (if available)
+	if(Serial.available() >= n_rx_bytes){
+	//if(Serial.available() >= n_rx_bytes + 1){		// if trailing newline is being sent (i.e. C++)
+		uartReceive(rx, n_rx);		// receive vector of numbers
+		Serial.read();				// read trailing newling (i.e. C++)
+
+		uartTransmit(tx, n_tx);		// transmit vector of numbers
 	}
 }
 
 void timer0ISR(void){
 	//Serial.println("timer0_ISR");
 
-	// Transmit Data to MATLAB
-	uartTransmit(tx, n_tx);
-
-	// Receive Data from MATLAB (if available)
-	if(Serial.available() >= n_rx_bytes){
-		uartReceive(rx, n_rx);
-		//serialPrintArray(rx_floats, n_rx_floats);		// if using putty or serial monitor
-	}
+	// Do Something
 }
 
 void blinkLED(){
