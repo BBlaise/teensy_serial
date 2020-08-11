@@ -7,7 +7,7 @@ It abstracts away the low-level formatting process needed to send an array/vecto
 ### Required Libraries
 "bitwise.h" - Performs low-level bit operations in C++. Necesary to convert binary data to decimal and vice-versa.
 
-# Functions
+# Functions - teensy_uart
 
 ## Transmit Functions
 
@@ -20,7 +20,7 @@ int tx = -12345;					// individual value (int32_t) to be transmitted
 uartTransmit(tx);					// convert to bytes (four) and transmit them in a sequence
 ```
 
-**uartTransmit(float* tx, int n_tx)** - This is an overloaded function that can be used to transmit an array (1-D) of values as binary data. It converts each value into bytes then sends the bytes in a sequence. It is overloaded to accept arrays of the following types: float, int, int32_t, int16_t, int8_t, uint32_t, uint16_t, uint8_t (byte).
+**uartTransmit(float* tx, int n_tx)** - This is an overloaded function that can be used to transmit an array (1-D) of values as binary data. It converts each value into bytes then sends the bytes in a sequence. It is overloaded to accept arrays of the following types: float, int, int32_t, int16_t, int8_t, uint32_t, uint16_t.
 - tx: 1-D array (pointer) of values
 - n_tx: the number of values in the array
 
@@ -40,7 +40,6 @@ uartTransmit(tx, n_tx);					// convert the values to bytes (float = four bytes) 
 - **int8_t uartReceiveInt8(void)**
 - **uint32_t uartReceiveUint32(void)**
 - **uint16_t uartReceiveUint16(void)**
-- **uart8_t uartReceiveUint8(void)**
 
 Receive an individual float:
 ```
@@ -56,7 +55,7 @@ if Serial.available() >= n_rx_bytes{			// check if all bytes areavailable on the
 - n_rx: the number of values in the array
 
 ```
-int16_t rx[2] = {};							// 1-D array of int16_ts to be transmitted
+int16_t rx[2] = {};							// 1-D buffer/array of int16_ts to be received
 int n_rx = sizeof(rx) / sizeof(rx[0]);		// number of values to receive
 int n_rx_bytes = sizeof(rx);				// number of bytes to receive (four total)
 if(Serial.avaialble() >= n_rx_bytes){
@@ -65,17 +64,16 @@ if(Serial.avaialble() >= n_rx_bytes){
 ```
 
 # Examples - teensy_uart
-Below are examples for using the functions
+The following example scripts are included in the folder **examples > teensy_uart_examples** to demonstrate the functionality of the library.
 
-## Transmit
+**transmit.cpp** - Transmit an array of either floats or ints periodically via UART\
+**receive.cpp** - Receive an array of either floats or ints whenever the appropriate amount of bytes are available\
+**bidirectional_driving.cpp** - Send and receive an array of numbers with the Teensy controlling the timing of communication\
+**bidirectonal_driven.cpp** - Send and receive an array of numbers with the other device controlling the timing of communication\
+**bidirectional_shared_start.cpp** - Bidirectional communication that includes protocol to start both devices at the same time\
+**bidirectional_error_checking.cpp** - Bidirectional communication with error checking to ensure data transmissions/receptions are complete\
 
-```
-Give examples
-```
-
-## Receive
-
-## Bidirectional
+# Methods - TeensyUART
 
 # Examples - TeensyUART
 
@@ -85,7 +83,5 @@ Give examples
 * **Bryan Blaise** - *Initial work* -
 
 ## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments

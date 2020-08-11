@@ -22,6 +22,7 @@ int n_tx = sizeof(tx) / sizeof(tx[0]);
 
 void setup(){
 	Serial.begin(115200);
+	//Serial.begin(460800);
 	delay(100);
 
 	timer0.begin(timer0ISR, timer0_period*1000);  // start program/timer ISR

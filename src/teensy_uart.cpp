@@ -9,6 +9,11 @@
 #include "Arduino.h"
 #include "bitwise.h"
 
+// This function clears any bytes waiting in the UART's receive buffer
+void uartFlushInputBuffer(void){
+	  while(Serial.available()) Serial.read();
+}
+
 // Print a tab-delimited array of integers to the serial monitor
 void serialPrintArray(int* array, int n_vals){
 	for(int ii = 0; ii < n_vals; ii++){
