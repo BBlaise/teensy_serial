@@ -37,7 +37,7 @@ void timer0ISR(void){
 
 	// Transmit an array of floats
 	uartTransmit(tx, n_tx);
-	//Serial.write('\n');			// if transmitting to C++ script
+	//Serial.write('\n');			// uncomment if transmitting to C++ script
 
 	//while(Serial.available() < n_rx_bytes){}		// blocking receive
 	if(Serial.available() >= n_rx_bytes){			// non blocking receive
